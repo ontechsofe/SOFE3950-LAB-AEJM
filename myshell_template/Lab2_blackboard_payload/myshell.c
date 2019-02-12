@@ -1,7 +1,7 @@
 /*
  * MyShell Project for SOFE 3950U / CSCI 3020U: Operating Systems
  *
- * Copyright (C) 2017, <GROUP MEMBERS>
+ * Copyright (C) 2019
  * All rights reserved.
  * 
  */
@@ -16,6 +16,8 @@
 
 // Put macros or constants here using #define
 #define BUFFER_LEN 256
+
+#define 
 
 // Put global environment variables here
 
