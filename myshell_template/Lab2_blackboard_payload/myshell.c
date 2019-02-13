@@ -18,12 +18,12 @@
 
 /**
  * Must support these commands:
- *      - cd        
+ *      - cd        *
  *      - clr       *
- *      - dir       
+ *      - dir       *
  *      - environ   *
  *      - echo      
- *      - help      
+ *      - help      *
  *      - pause     *
  *      - quit      *
  * 
@@ -33,6 +33,17 @@
 #define BUFFER_LEN 256
 
 // Put global environment variables here
+char* helpData[][BUFFER_LEN] = {
+    {"cd", "cd [path]", "Change Directory"},
+    {"clr", "clr", "Clear the screen"},
+    {"dir", "dir", "Show contents of current dir"},
+    {"environ", "environ", "List all environment variables"},
+    {"echo", "echo", "repeat the string"},
+    {"help", "help [command]", "show this menu or for a specific command"},
+    {"pause", "pause", "pause until enter is pressed"},
+    {"quit", "quit", "exit the seshell"}
+};
+
 
 void printShellLineStart() {
     char cwd[BUFFER_LEN];
@@ -57,7 +68,7 @@ int main(int argc, char *argv[]) {
     {
         char* token;
         // Grabs the first token, the command  
-        printf("[%s]", &buffer);
+        // printf("[%s]", &buffer);
         sscanf(buffer, "%s\n", &command); 
         if (command == "") {
             break;
@@ -65,8 +76,6 @@ int main(int argc, char *argv[]) {
         token = strtok(command, " ");
         // printf("\e[1;95m%s\e[0m\n", token);        
 
-        // Check the command and execute the operations for each command
-        // cd command -- change the current directory
         if (strcmp(token, "cd") == 0) {
             token = strtok(buffer, " ");
             token = strtok(NULL, " ");
@@ -82,11 +91,11 @@ int main(int argc, char *argv[]) {
             if(d) {
                 while((directory = readdir(d)) != NULL) {
                     if (directory->d_type == 4) {
-                        printf("\033[0;34m");
+                        printf("DIR  \033[0;34m");
                     } else if(directory->d_type == 8) {
-                        printf("\033[0;36m");
+                        printf("FILE \033[0;36m");
                     }
-                    printf("%s\e[0m\n", directory->d_name);
+                    printf("%d, %s\e[0m\n", directory->d_reclen,  directory->d_name);
                 }
                 closedir(d);
             }
@@ -104,8 +113,28 @@ int main(int argc, char *argv[]) {
             char st[BUFFER_LEN];
             printf("Paused! ... Press Enter to continue.");
             fgets(st,20,stdin);
-        } else if (strcmp(token, "help") == 0) {
-            printf("Please try entering something like: command [args]\n");
+            printf("\aNOT PAUSED ANYMORE!\n");
+        } else if (strcmp(token, "echo") == 0) {
+            char st[BUFFER_LEN];
+            printf("You are standing in a cave. Anything you say now will echo: ");
+            fgets(st, BUFFER_LEN, stdin);
+            printf("%s", st);
+        }else if (strcmp(token, "help") == 0) {
+            token = strtok(buffer, " ");
+            token = strtok(NULL, " ");
+            if (token == NULL) {
+                printf("\e[1;95mWELCOME TO HELP MENU! YAY!\e[0m\n\n");
+                int size = sizeof(helpData) / sizeof(helpData[0]);
+                printf("\e[0;32m╔══════════╤═════════════════════════╤══════════════════════════════════════════╗\e[0m\n");
+                printf("\e[0;32m║\e[0m%-10s\e[0;32m│\e[0m%-25s\e[0;32m│\e[0m%-42s\e[0;32m║\e[0m\n", "Command", "Usage", "Description");
+                for (int i = 0; i < size; i++) {
+                    printf("\e[0;32m╟──────────┼─────────────────────────┼──────────────────────────────────────────╢\e[0m\n");
+                    printf("\e[0;32m║\e[0m%-10s\e[0;32m│\e[0m%-25s\e[0;32m│\e[0m%-42s\e[0;32m║\e[0m\n", helpData[i][0], helpData[i][1], helpData[i][2]);
+                }
+                printf("\e[0;32m╚══════════╧═════════════════════════╧══════════════════════════════════════════╝\e[0m\n");
+            } else {
+                printf("\e[1;95mWELCOME TO HELP MENU FOR %s\e[0m\n\n", token);
+            }
         } else {
             fputs("Unsupported command, use help to display the manual\n", stderr);
         }
