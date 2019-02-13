@@ -57,17 +57,25 @@ int main(int argc, char *argv[]) {
     {
         char* token;
         // Grabs the first token, the command  
+        printf("[%s]", &buffer);
         sscanf(buffer, "%s\n", &command); 
+        if (command == "") {
+            break;
+        }
         token = strtok(command, " ");
-        printf("\e[1;95m%s\e[0m\n", token);        
+        // printf("\e[1;95m%s\e[0m\n", token);        
 
         // Check the command and execute the operations for each command
         // cd command -- change the current directory
         if (strcmp(token, "cd") == 0) {
             token = strtok(buffer, " ");
             token = strtok(NULL, " ");
-            chdir(token);
-        } else if (strcmp(token, "dir") == 0) {
+            sscanf(token, "%s\n", token);
+            // printf("directory = [%s]\n", token);
+            if (chdir(token) != 0) {
+                perror("cannot cd");
+            }
+        } else if (strcmp(token, "dir") == 0 || strcmp(token, "ls") == 0) {
             DIR *d;
             struct dirent *directory;
             d = opendir(".");
@@ -79,7 +87,7 @@ int main(int argc, char *argv[]) {
                     } else if(directory->d_type == 8) {
                         printf("\033[0;36m");
                     }
-                    printf("%s\t%d\e[0m\n", directory->d_name, directory->d_type);
+                    printf("%s\e[0m\n", directory->d_name);
                 }
                 closedir(d);
             }
