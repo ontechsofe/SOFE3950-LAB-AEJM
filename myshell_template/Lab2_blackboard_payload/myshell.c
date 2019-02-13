@@ -18,14 +18,14 @@
 
 /**
  * Must support these commands:
- *      - cd
- *      - clr
- *      - dir
- *      - environ
- *      - echo
- *      - help
- *      - pause
- *      - quit
+ *      - cd        
+ *      - clr       *
+ *      - dir       
+ *      - environ   *
+ *      - echo      
+ *      - help      
+ *      - pause     *
+ *      - quit      *
  * 
  **/
 
@@ -33,18 +33,6 @@
 #define BUFFER_LEN 256
 
 // Put global environment variables here
-
-// Define functions declared in myshell.h here
-// char* tokenizeString(char* inputString, int numArgs) {
-//     char* token;
-//     const char *args[numArgs];
-//     // Grabbing the first token - e.g. First Argument
-//     token = strtok(inputString, " ");
-//     while (token != NULL) {
-//         args[i] = strtok(inputString, " ");        
-//     }
-//     return args;
-// }
 
 void printShellLineStart() {
     char cwd[BUFFER_LEN];
@@ -86,8 +74,6 @@ int main(int argc, char *argv[]) {
             if(d) {
                 while((directory = readdir(d)) != NULL) {
                     int dirType = 0;
-                    sscanf(directory->d_type, "%d", )
-                    printf("\n%d\n", directory->d_type);
                     if (directory->d_type == 4) {
                         printf("\033[0;34m");
                     } else if(directory->d_type == 8) {
@@ -100,21 +86,19 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(token, "environ") == 0) {
             extern char **environ;
             int i = 0;
-            while (environ[i]) {
-                printf("%s\n", environ[i++]);
-            }
-        } else if (strcmp(token, "help") == 0){
-            printf("Please try entering something like: command [args]\n");
-        } else if (strcmp(token, "quit") == 0) {
+            while (environ[i]) { printf("%s\n", environ[i++]); }
+        } else if (strcmp(token, "clear") == 0) {
+            printf("\033[2J\033[1;1H");
+            ftruncate(1,0);
+        } else if (strcmp(token, "quit") == 0 || strcmp(token, "exit") == 0) {
             printf("Tanks for barking vit SES!\nGOOT BYE!\n");
             return EXIT_SUCCESS;
-        } else if (strcmp(token, "pause") == 0){
-            //String test;
-            //while (1){
-            //if (scanf(%s, %test) == 0){
-            // break;
-            //}
-            //}
+        } else if (strcmp(token, "pause") == 0) {
+            char st[BUFFER_LEN];
+            printf("Paused! ... Press Enter to continue.");
+            fgets(st,20,stdin);
+        } else if (strcmp(token, "help") == 0) {
+            printf("Please try entering something like: command [args]\n");
         } else {
             fputs("Unsupported command, use help to display the manual\n", stderr);
         }
@@ -122,3 +106,6 @@ int main(int argc, char *argv[]) {
     }   
     return EXIT_SUCCESS;
 }
+
+
+
