@@ -81,7 +81,6 @@ int main(int argc, char *argv[]) {
             d = opendir(".");
             if(d) {
                 while((directory = readdir(d)) != NULL) {
-                    int dirType = 0;
                     if (directory->d_type == 4) {
                         printf("\033[0;34m");
                     } else if(directory->d_type == 8) {
@@ -111,6 +110,7 @@ int main(int argc, char *argv[]) {
             fputs("Unsupported command, use help to display the manual\n", stderr);
         }
         printShellLineStart();
+        buffer[0] = '\0';
     }   
     return EXIT_SUCCESS;
 }
